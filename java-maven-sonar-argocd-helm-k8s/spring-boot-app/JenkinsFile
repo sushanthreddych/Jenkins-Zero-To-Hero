@@ -30,18 +30,16 @@ pipeline {
       }
     }
     stage('Build and Push Docker Image') {
+    environment {
+        DOCKER_IMAGE = "sushanth1996/ultimate-cicd:${BUILD_NUMBER}"
+        REGISTRY_CREDENTIALS = credentials('docker-cred')
+    }
     steps {
         script {
-            def registryUrl = 'docker-io-sushanth1996'
-            def imageName = 'my-image'
-            def imageTag = '1'
-            // Print the constructed image name and tag
-            echo "Constructed Image Name: ${registryUrl}/${imageName}:${imageTag}"
-            // Tag the Docker image with your registry URL
-            docker.image("${imageName}:${imageTag}").tag("${imageName}:${imageTag}")
-            // Push the Docker image to your registry
-            docker.withRegistry(registryUrl, 'docker-cred') {
-                docker.image("${registryUrl}/${imageName}:${imageTag}").push()
+            sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
+            def dockerImage = docker.image("${DOCKER_IMAGE}")
+            docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
+                dockerImage.push()
             }
         }
     }
