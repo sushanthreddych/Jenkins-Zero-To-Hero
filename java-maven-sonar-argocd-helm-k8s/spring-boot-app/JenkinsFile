@@ -32,7 +32,7 @@ pipeline {
     stage('Build and Push Docker Image') {
     steps {
         script {
-            def registryUrl = 'docker.io/sushanth1996'
+            def registryUrl = 'docker-io-sushanth1996'
             def imageName = 'my-image'
             def imageTag = '1'
             // Print the constructed image name and tag
