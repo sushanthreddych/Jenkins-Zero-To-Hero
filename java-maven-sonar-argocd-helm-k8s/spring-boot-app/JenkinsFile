@@ -33,8 +33,8 @@ pipeline {
     steps {
         script {
             def registryUrl = 'docker.io/sushanth1996'
-            def imageName = 'abhishekf5/ultimate-cicd'
-            def imageTag = '7'
+            def imageName = 'shr'
+            def imageTag = '1'
 
             // Tag the Docker image with your registry URL
             docker.image("${imageName}:${imageTag}").tag("${registryUrl}/${imageName}:${imageTag}")
