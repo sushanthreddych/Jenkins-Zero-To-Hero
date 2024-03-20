@@ -37,7 +37,7 @@ pipeline {
             def imageTag = '1'
 
             // Tag the Docker image with your registry URL
-            docker.image("${imageName}:${imageTag}").tag("${registryUrl}/${imageName}:${imageTag}")
+            docker.image("${imageName}:${imageTag}").tag("${imageName}:${imageTag}")
             // Push the Docker image to your registry
             docker.withRegistry(registryUrl, 'docker-cred') {
                 docker.image("${registryUrl}/${imageName}:${imageTag}").push()
