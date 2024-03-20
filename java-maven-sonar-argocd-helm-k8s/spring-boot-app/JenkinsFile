@@ -35,7 +35,8 @@ pipeline {
             def registryUrl = 'docker.io/sushanth1996'
             def imageName = 'my_image'
             def imageTag = '1'
-
+            // Print the constructed image name and tag
+            echo "Constructed Image Name: ${registryUrl}/${imageName}:${imageTag}"
             // Tag the Docker image with your registry URL
             docker.image("${imageName}:${imageTag}").tag("${imageName}:${imageTag}")
             // Push the Docker image to your registry
