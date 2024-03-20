@@ -21,7 +21,7 @@ pipeline {
     }
     stage('Static Code Analysis') {
       environment {
-        SONAR_URL = "http://54.237.77.170:9000/"
+        SONAR_URL = "http://100.26.154.187:9000/"
       }
       steps {
         withCredentials([string(credentialsId: 'Sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
@@ -37,8 +37,7 @@ pipeline {
             def imageTag = '1'
 
             // Tag the Docker image with your registry URL
-            docker.image("${imageName}:${imageTag}").tag("${registryUrl}/${imageName}:${imageTag}")
-
+            docker.image("${registryUrl}/${imageName}:${imageTag}").tag("${registryUrl}/${imageName}:${imageTag}")
             // Push the Docker image to your registry
             docker.withRegistry(registryUrl, 'docker-cred') {
                 docker.image("${registryUrl}/${imageName}:${imageTag}").push()
