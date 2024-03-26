@@ -21,10 +21,10 @@ pipeline {
     }
     stage('Static Code Analysis') {
       environment {
-        SONAR_URL = "http://107.20.221.6:9000"
+        SONAR_URL = "http://52.91.131.192:9000/"
       }
       steps {
-        withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
+        withCredentials([string(credentialsId: 'Sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
           sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
         }
       }
@@ -32,13 +32,13 @@ pipeline {
     stage('Build and Push Docker Image') {
     environment {
         DOCKER_IMAGE = "sushanth1996/ultimate-cicd:${BUILD_NUMBER}"
-        REGISTRY_CREDENTIALS = credentials('dockerhub')
+        REGISTRY_CREDENTIALS = credentials('docker-cred')
     }
     steps {
         script {
             sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
             def dockerImage = docker.image("${DOCKER_IMAGE}")
-            docker.withRegistry('https://index.docker.io/v1/', "dockerhub") {
+            docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
                 dockerImage.push()
             }
         }
@@ -49,14 +49,10 @@ pipeline {
             GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
             GIT_USER_NAME = "sushanthreddych"
         }
-        stage('Update Deployment File') {
-        environment {
-            GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
-            GIT_USER_NAME = "sushanthreddych"
-        }
         steps {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                 sh '''
+                    set -x
                     git config user.email "sushanthreddych@gmail.com"
                     git config user.name "sushanthreddych"
                     BUILD_NUMBER=${BUILD_NUMBER}
@@ -69,5 +65,4 @@ pipeline {
         }
     }
   }
-}
 }
